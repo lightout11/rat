@@ -4,6 +4,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <string>
+#include <netinet/in.h>
+#include <netinet/ip.h>
 
 class ServerSocket {
     public:
@@ -15,16 +17,20 @@ class ServerSocket {
         int SendMessage();
         int ParseMessage();
         int Handle();
+        int SendFile(std::string path);
+        int ReceiveFile();
+        int ExecuteCommand();
+        int ChangeDirectory();
+        int GetDirectory();
 
     protected:
         static constexpr int kDefaultPort = 12345;
-        static constexpr int kMaxBacklog = 1;
+        static constexpr int kMaxBacklog = 4;
         static constexpr int kBufferSize = 1024;
-        static constexpr char kBreak = '\e';
-        
-        inline static const std::string kPwd = "pwd";
+                
         inline static const std::string kGetFile = "getfile";
         inline static const std::string kSendFile = "sendfile";
+        inline static const std::string kOutput = "output.txt";
 
     private:
         int socket_;
