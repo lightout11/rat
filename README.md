@@ -1,0 +1,3 @@
+# RAT
+
+How to run

@@ -1,4 +1,7 @@
+*.*
+*/
+!README.md
+!source/
 !Makefile
-.vscode/
-build/
-*.txt
+
+
