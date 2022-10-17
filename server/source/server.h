@@ -26,11 +26,12 @@ class ServerSocket {
     protected:
         static constexpr int kDefaultPort = 12345;
         static constexpr int kMaxBacklog = 4;
-        static constexpr int kBufferSize = 1024;
+        static constexpr int kBufferSize = 512;
                 
         inline static const std::string kGetFile = "getfile";
         inline static const std::string kSendFile = "sendfile";
         inline static const std::string kOutput = "output.txt";
+        inline static const std::string kRun = "output.txt";
 
     private:
         int socket_;

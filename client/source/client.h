@@ -19,7 +19,7 @@ class ClientSocket {
         int Communicate();
 
     protected:
-        static constexpr int kBufferSize = 1024;
+        static constexpr int kBufferSize = 512;
 
         inline static const std::string kGetFile = "getfile";
         inline static const std::string kSendFile = "sendfile";
@@ -29,7 +29,6 @@ class ClientSocket {
         int socket_;
         sockaddr_in internet_socket_address_;
         std::string message_;
-        std::string directory_;
 };
 
 #endif
