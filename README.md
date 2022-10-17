@@ -1,5 +1,7 @@
 # RAT
-How to test
+## How to test
+* Client: open server directory in terminal
+* Server: open client directory in terminal
 ```
 make debug
 ```
