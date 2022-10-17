@@ -14,8 +14,11 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <cstdlib>
+#include <netinet/tcp.h>
 
 using namespace std;
+
+extern char** environ;
 
 ServerSocket::ServerSocket() {
     cout << "Creating socket..." << endl;
@@ -63,6 +66,9 @@ int ServerSocket::AcceptConnection() {
         cout << "Error accepting socket: " << strerror(errno) << endl;
         exit(-1);
     }
+    // int optval = 1;
+    // socklen_t optlen = sizeof(optval);
+    // setsockopt(accepted_socket_, IPPROTO_TCP, TCP_NODELAY, &optval, optlen);
     cout << "Accepted!" << endl;
     return 0;
 }
@@ -70,6 +76,7 @@ int ServerSocket::AcceptConnection() {
 int ServerSocket::ReceiveMessage() {
     message_.clear();
     char buffer[kBufferSize + 1];
+    memset(buffer, 0, kBufferSize + 1);
     if (recv(accepted_socket_, buffer, kBufferSize, 0) < 0) {
         cout << "Error receiving message: " << strerror(errno) << endl;
     }
@@ -79,7 +86,9 @@ int ServerSocket::ReceiveMessage() {
 
 int ServerSocket::SendMessage() {
     char buffer[kBufferSize + 1];
+    memset(buffer, 0, kBufferSize + 1);
     strcpy(buffer, message_.c_str());
+    cout << strlen(buffer) << endl;
     if (send(accepted_socket_, buffer, kBufferSize, 0) < 0) {
         cout << "Error sending message: " << strerror(errno) << endl;
         return -1;
@@ -100,6 +109,7 @@ int ServerSocket::SendFile(string path) {
         return -1;
     }
     // get file size
+    memset(buffer, 0, kBufferSize);
     int filesize = filestat.st_size;
     sprintf(buffer, "%d", filesize);
     cout << buffer << endl;
@@ -108,10 +118,18 @@ int ServerSocket::SendFile(string path) {
         cout << "Error sending file size: " << strerror(errno) << endl;
         return -1;
     }
-    while (read(fd, buffer, kBufferSize)) {
+    while (true) {
+        int readdata = read(fd, buffer, kBufferSize);
+        cout << readdata << endl;
+        if (readdata < 0) {
+            cout << "Error reading data from file: " << strerror(errno) << endl;
+            return -1;
+        }
+        if (readdata == 0) {
+            break;
+        }
         cout << "Sending data..." << endl;
-        cout << buffer << endl;
-        if (send(accepted_socket_, buffer, kBufferSize, 0) < 0) {
+        if (send(accepted_socket_, buffer, readdata, 0) < 0) {
             cout << "Error sending data: " << strerror(errno) << endl;
             return -1;
         }
@@ -158,6 +176,10 @@ int ServerSocket::Handle() {
             string path = message_.substr(message_.find(" ") + 1);
             cout << path << endl;
             SendFile(path);
+        } else if (message_.find(kRun) == 0) {
+            fork();
+            string command = message_.substr(message_.find(" ") + 1);
+            execl(command.c_str(), NULL);
         } else {
             string command = message_ + " > " + kOutput;
             system(command.c_str());
