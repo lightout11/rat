@@ -1,4 +1,5 @@
 # RAT
+Note (Client is server, server is client)
 ## How to test
 * Client: open server directory in terminal
 * Server: open client directory in terminal
