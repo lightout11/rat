@@ -1,5 +1,7 @@
 # RAT
-Note (Client is server, server is client)
+## Note 
+* Client is server, server is client
+* Use C++17
 ## How to test
 * Client: open server directory in terminal
 * Server: open client directory in terminal
