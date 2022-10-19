@@ -102,7 +102,6 @@ int Server::SendFile(string path) {
 }
 
 int Server::ReceiveFile() {
-    cout << "Receive file from client..." << endl;
     // get file path
     ReceiveMessage();
     string path = message_;
@@ -133,7 +132,7 @@ int Server::ReceiveFile() {
 
 int Server::Communicate() {
     while (true) {
-        cout << "> ";
+        cout << "Server: ";
         getline(cin, message_);
         while (message_[0] == ' ') {
             message_.erase(0, 1);
@@ -149,7 +148,7 @@ int Server::Communicate() {
             string path = message_.substr(message_.find(" "));
             SendFile(path);
         } else if (message_.find(kGetFile) == 0) {
-            cout << "Get File!" << endl;
+            cout << "Receive file from client..." << endl;
             if (ReceiveFile() == 0) {
                 cout << "Success!" << endl; 
             } else {

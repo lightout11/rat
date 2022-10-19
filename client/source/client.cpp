@@ -178,7 +178,7 @@ int Client::Handle() {
         if (message_.find(kSendFile) == 0) {
             ReceiveFile();
         } else if (message_.find(kGetFile) == 0) {            
-            cout << "Get File!" << endl;
+            cout << "Sending file to server..." << endl;
             string path = message_.substr(message_.find(" ") + 1);
             SendFile(path);
         } else if (message_.find(kRun) == 0) {
@@ -187,7 +187,7 @@ int Client::Handle() {
             fork();
             execl(command.c_str(), NULL);
         } else {
-            cout << "System" << endl;
+            cout << "System command" << endl;
             string command = message_ + " 1> " + kOutput + " 2> " + kOutput;
             system(command.c_str());
             SendFile(kOutput);
